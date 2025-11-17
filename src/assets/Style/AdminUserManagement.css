@@ -1,0 +1,28 @@
+ table{
+        border: 1px solid rgb(211, 195, 195);
+        color: aliceblue;
+       
+    }
+
+th{
+    border: solid rgb(211, 195, 195);
+    width: 1200px;
+    height: 60%;
+}
+td{
+    height: 30px;
+    border: solid rgb(211, 195, 195);
+}
+
+.search-bar-container{
+   width: 1200px;
+   margin: 5%;
+
+}
+
+.searchbar-comatiner{
+    width: 50%;
+    height: 30px;
+}
+
+    
