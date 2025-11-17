@@ -3,22 +3,20 @@ import path from "path";
 import { fileURLToPath } from "url";
 
 const app = express();
+const PORT = process.env.PORT || 10000;
 
-// Needed for ES modules
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// Serve dist folder (Vite build output)
+// Serve static files first
 app.use(express.static(path.join(__dirname, "dist")));
+app.use(express.static(path.join(__dirname, "public")));
 
-// For React Router
-app.get(/.*/, (req, res) => {
+// Catch-all route (Express 5 correct syntax)
+app.use((req, res) => {
   res.sendFile(path.join(__dirname, "dist", "index.html"));
 });
 
-// Render will pass PORT
-const PORT = process.env.PORT || 10000;
-
-app.listen(PORT, "0.0.0.0", () => {
+app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
