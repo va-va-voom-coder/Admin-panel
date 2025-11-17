@@ -16,3 +16,15 @@
     "emp_id": "11"
   }
 ]
+
+
+[
+  {
+    "email": "test@gmail.com",
+    "password": "123456"
+  },
+  {
+    "email": "urvi@gmail.com",
+    "password": "urvi123"
+  }
+]

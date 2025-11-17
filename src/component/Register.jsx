@@ -4,12 +4,16 @@ import "../assets/Style/Register.css";
 
 export const Register = () => {
   const navigate = useNavigate();
+
   const [input, setInput] = useState({
     name: "",
     email: "",
     password: "",
     confirmPassword: "",
     dob: "",
+    role: "",
+    m_number: "",
+    emp_id: "",
   });
 
   const [errors, setErrors] = useState({});
@@ -24,23 +28,71 @@ export const Register = () => {
 
   const validate = () => {
     let err = {};
+
     if (!input.name.trim()) err.name = "Name required";
+
     if (!input.email.trim()) err.email = "Email required";
+    else if (!input.email.includes("@"))
+      err.email = "Invalid email (must contain @)";
+
     if (!input.password.trim()) err.password = "Password required";
-    if (!input.confirmPassword.trim()) err.confirmPassword = "Confirm password";
-    if (input.password !== input.confirmPassword)
-      err.confirmPassword = "Password mismatch";
-    if (!input.dob.trim()) err.dob = "DOB required";
+
+    if (!input.confirmPassword.trim())
+      err.confirmPassword = "Confirm password required";
+    else if (input.password !== input.confirmPassword)
+      err.confirmPassword = "Passwords do not match";
+
+    if (!input.dob.trim()) err.dob = "Date of birth required";
+
+    if (!input.role.trim()) err.role = "Role required";
+
+    if (!input.m_number.trim()) err.m_number = "Mobile number required";
+
+    if (!input.emp_id.trim()) err.emp_id = "Employee ID required";
+
+    // If any password rule fails
+    if (
+      !(
+        passwordRules.uppercase &&
+        passwordRules.lowercase &&
+        passwordRules.number &&
+        passwordRules.special &&
+        passwordRules.length
+      )
+    ) {
+      err.password = "Password does not meet requirements";
+    }
+
     setErrors(err);
     return Object.keys(err).length === 0;
   };
 
   const handleRegister = (e) => {
     e.preventDefault();
-    if (validate()) {
-      alert("Registration Successful");
-      navigate("/Login");
-    }
+    if (!validate()) return;
+
+    // Save User Data to localStorage
+    const userData = JSON.parse(localStorage.getItem("users")) || [];
+    userData.push({
+      name: input.name,
+      email: input.email,
+      dob: input.dob,
+      role: input.role,
+      m_number: input.m_number,
+      emp_id: input.emp_id,
+    });
+    localStorage.setItem("users", JSON.stringify(userData));
+
+    // Save Login credentials
+    const loginData = JSON.parse(localStorage.getItem("loginData")) || [];
+    loginData.push({
+      email: input.email,
+      password: input.password,
+    });
+    localStorage.setItem("loginData", JSON.stringify(loginData));
+
+    alert("Registration Successful ✔");
+    navigate("/Login");
   };
 
   return (
@@ -78,6 +130,7 @@ export const Register = () => {
             value={input.password}
             onChange={(e) => setInput({ ...input, password: e.target.value })}
           />
+
           <div className="mt-2">
             <p
               className={
@@ -109,6 +162,7 @@ export const Register = () => {
               • Min 8 Characters
             </p>
           </div>
+
           <small className="text-danger">{errors.password}</small>
         </div>
 
@@ -134,6 +188,39 @@ export const Register = () => {
             onChange={(e) => setInput({ ...input, dob: e.target.value })}
           />
           <small className="text-danger">{errors.dob}</small>
+        </div>
+
+        <div className="mb-3">
+          <label>Role</label>
+          <input
+            className="form-control"
+            type="text"
+            value={input.role}
+            onChange={(e) => setInput({ ...input, role: e.target.value })}
+          />
+          <small className="text-danger">{errors.role}</small>
+        </div>
+
+        <div className="mb-3">
+          <label>Mobile Number</label>
+          <input
+            className="form-control"
+            type="number"
+            value={input.m_number}
+            onChange={(e) => setInput({ ...input, m_number: e.target.value })}
+          />
+          <small className="text-danger">{errors.m_number}</small>
+        </div>
+
+        <div className="mb-3">
+          <label>Employee ID</label>
+          <input
+            className="form-control"
+            type="text"
+            value={input.emp_id}
+            onChange={(e) => setInput({ ...input, emp_id: e.target.value })}
+          />
+          <small className="text-danger">{errors.emp_id}</small>
         </div>
 
         <button className="btn btn-success w-100" type="submit">

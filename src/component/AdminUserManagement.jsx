@@ -1,97 +1,52 @@
 import React, { useEffect, useState } from "react";
-import "../assets/Style/AdminUserManagement.css";
-import { Link } from "react-router-dom";
 
-function AdminUser() {
-  const [data, setData] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const [searchTerm, setSearchTerm] = useState("");
+export const AdminUserManagement = () => {
+  const [users, setUsers] = useState([]);
 
   useEffect(() => {
-    fetch("/userdata.json")
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error("Failed to fetch userdata.json");
-        }
-        return response.json();
-      })
-      .then((data) => {
-        setData(data);
-        setLoading(false);
-      })
-      .catch((error) => {
-        setError(error);
-        setLoading(false);
-      });
+    const data = JSON.parse(localStorage.getItem("users")) || [];
+    setUsers(data);
   }, []);
 
-  if (loading) return <div>Loading data...</div>;
-  if (error) return <div>Error: {error.message}</div>;
-
-  const filteredData = data.filter((item) =>
-    item.name.toLowerCase().includes(searchTerm.toLowerCase())
-  );
-
   return (
-    <>
-      <h1>Admin User Page</h1>
+    <div className="page-container">
+      <h1>User Management</h1>
 
-      {/* Search Bar */}
-      <form
-        className="search-bar-container"
-        onSubmit={(e) => e.preventDefault()}
+      <table
+        border="1"
+        cellPadding="12"
+        style={{ width: "100%", background: "#fff" }}
       >
-        <input
-          type="search"
-          placeholder="Search..."
-          className="searchbar-comatiner"
-          onChange={(e) => setSearchTerm(e.target.value)}
-        />
-        <button type="submit" id="searchButton">
-          Search
-        </button>
-      </form>
-
-      {/* Table */}
-      <table className="table-views">
         <thead>
           <tr>
             <th>Name</th>
-            <th>Role</th>
-            <th>DOB</th>
             <th>Email</th>
-            <th>Mobile No</th>
+            <th>DOB</th>
+            <th>Role</th>
+            <th>Mobile</th>
             <th>Emp ID</th>
           </tr>
         </thead>
+
         <tbody>
-          {filteredData.length > 0 ? (
-            filteredData.map((item, index) => (
-              <tr key={index}>
-                <td>{item.name}</td>
-                <td>{item.role}</td>
-                <td>{item.dob}</td>
-                <td>{item.email}</td>
-                <td>{item.m_number}</td>
-                <td>{item.emp_id}</td>
+          {users.length === 0 ? (
+            <tr>
+              <td colSpan={6}>No users found</td>
+            </tr>
+          ) : (
+            users.map((u, i) => (
+              <tr key={i}>
+                <td>{u.name}</td>
+                <td>{u.email}</td>
+                <td>{u.dob}</td>
+                <td>{u.role}</td>
+                <td>{u.m_number}</td>
+                <td>{u.emp_id}</td>
               </tr>
             ))
-          ) : (
-            <tr>
-              <td colSpan="6" style={{ textAlign: "center" }}>
-                No results found
-              </td>
-            </tr>
           )}
         </tbody>
       </table>
-
-      <p className="mt-3 text-center">
-        Back to login <Link to="/Login">Login</Link>
-      </p>
-    </>
+    </div>
   );
-}
-
-export default AdminUser;
+};
